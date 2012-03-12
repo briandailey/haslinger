@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, render_template
 from flaskext.sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
@@ -6,8 +6,8 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
 db = SQLAlchemy(app)
 
 @app.route("/")
-def hello():
-    return "Hello World!"
+def index():
+    return render_template('index.html')
 
 class Icd10Code(db.Model):
     id = db.Column(db.Integer, primary_key=True)

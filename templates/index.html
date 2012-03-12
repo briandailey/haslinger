@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>ICD-9 / ICD-10 Helper</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Icd9 and Icd10-CM helper.">
+    <meta name="author" content="Brian Dailey">
+
+    <!-- Le styles -->
+
+    <link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/jquery-ui-1.8.18.custom/css/ui-lightness/jquery-ui-1.8.18.custom.css" rel="stylesheet">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <link rel="shortcut icon" href="/static/images/favicon.ico">
+
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .container h1 { text-align: center; }
+      .boiler p { font-size: 120%; text-align: center; }
+      .search {
+          padding: 15px;
+          display: block;
+          width: 400px;;
+          margin: 0px auto;
+          text-align: center;
+      }
+      .search input[type=text] {
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+        <h1>ICD-9 / ICD-10 Helper</h1>
+        <div class="boiler">
+            <p>A quick, convenient way to lookup mapping across ICD9 and ICD10 codes.</p>
+        </div>
+        <div class="search">
+            <form class="form-search" action="/test">
+                <div class="controls">
+                        <input type="radio" name="forward" value="0" checked="checked"/>
+                        ICD-9 to ICD-10
+                        <input type="radio" name="forward" value="1" />
+                        ICD-10 to ICD-9
+                </div>
+                <br/>
+                <div class="input-append">
+                    <input type="text" name="search" id="autocomplete"/>
+                    <a href="#info"><span class="add-on">?</span></a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js" type="text/javascript"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js" type="text/javascript"></script>
+    <script src="/static/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+        $(function() {
+            $("input#autocomplete").autocomplete({
+                source: ["c++", "java", "php", "coldfusion", "javascript", "asp", "ruby"]
+            });
+        });
+    </script>
+
+  </body>
+</html>
