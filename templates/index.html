@@ -1,63 +1,75 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <title>ICD-9 / ICD-10 Helper</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Icd9 and Icd10-CM helper.">
-    <meta name="author" content="Brian Dailey">
-
-    <!-- Le styles -->
-
-    <link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="/static/jquery-ui-1.8.18.custom/css/ui-lightness/jquery-ui-1.8.18.custom.css" rel="stylesheet">
-
-    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
-    <!--[if lt IE 9]>
-      <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-
-    <link rel="shortcut icon" href="/static/images/favicon.ico">
-
-    <style type="text/css">
-      body {
-        padding-top: 60px;
-        padding-bottom: 40px;
-      }
-      .container h1 { text-align: center; }
-      .boiler p { font-size: 120%; text-align: center; }
-      .search {
-          padding: 15px;
-          display: block;
-          width: 400px;;
-          margin: 0px auto;
-          text-align: center;
-      }
-      .search input[type=text] {
-      }
-    </style>
-  </head>
-
-  <body>
+{% extends "layout.html" %}
+{% block body %}
     <div class="container">
-        <h1>ICD-9 / ICD-10 Helper</h1>
-        <div class="boiler">
-            <p>A quick, convenient way to lookup mapping across ICD9 and ICD10 codes.</p>
-        </div>
+        <header id="overview" class="jumbotron subhead">
+            <h1>ICD-9 / ICD-10 Helper</h1>
+            <p class="lead">A quick, convenient way to lookup mapping across ICD-9 and ICD-10 codes.</p>
+        </header>
         <div class="search">
             <form class="form-search" action="/test">
-                <div class="controls">
-                        <input type="radio" name="forward" value="0" checked="checked"/>
-                        ICD-9 to ICD-10
-                        <input type="radio" name="forward" value="1" />
-                        ICD-10 to ICD-9
-                </div>
+                <table class="options">
+                    <tr>
+                        <th>Direction</th>
+                        <th>Code Type</th>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="radio" name="forward" value="1" checked="checked"/>
+                            ICD-9 &rarr; ICD-10
+                        </td>
+                        <td>
+                            <input type="radio" name="diagnosis" value="1" checked="checked" />
+                            Diagnosis
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="radio" name="forward" value="0" />
+                            ICD-9 &larr; ICD-10
+                        </td>
+                        <td>
+                            <input type="radio" name="diagnosis" value="0" />
+                            Procedure
+                        </td>
+                    </tr>
+                </table>
                 <br/>
                 <div class="input-append">
-                    <input type="text" name="search" id="autocomplete"/>
-                    <a href="#info"><span class="add-on">?</span></a>
+                    <input type="text" name="q" id="autocomplete"/>
+                    <a href="{{ url_for('about') }}"><span class="add-on">?</span></a>
+                    &nbsp;
+                    <button class="btn" type="submit">Go</button>
                 </div>
             </form>
+        </div>
+        <div id="matches"></div>
+        <div id="glossary">
+            <div class="page-header">
+                <h2>Glossary</h2>
+            </div>
+            <div class="row">
+                <p>All glossary explanations are taken from the <i>General Equialence Mappings, Documentation for Technical Users</i>.</p>
+                <div class="span6">
+                    <p>
+                        <span class="label label-important">Approximate Match</span>
+                        <br/>
+                        Indicates complete meaning of the source and the target are not considered equivalent.
+                    </p>
+                </div>
+                <div class="span6">
+                    <p><span class="label label-success">Exact Match</span>
+                        <br/>
+                        Indicates the complete meaning of the source and the target are considered equivalent and the source and target translate only to each other in both GEMs files.
+                    </p>
+                </div>
+                <div class="span6">
+                    <p>
+                    <span class="label label-warning">Combination</span>
+                    <br/>
+                    Indicates that a cluster of target system codes—consisting of two, three, four, or more codes— taken together provide an adequate translation of the source system code.
+                    </p>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -65,16 +77,41 @@
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js" type="text/javascript"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js" type="text/javascript"></script>
+    <script src="/static/js/jquery-ui-1.8.18.custom/js/jquery-1.7.1.min.js" type="text/javascript"></script>
+    <script src="/static/js/jquery-ui-1.8.18.custom/js/jquery-ui-1.8.18.custom.min.js" type="text/javascript"></script>
     <script src="/static/bootstrap/js/bootstrap.min.js"></script>
     <script type="text/javascript">
         $(function() {
-            $("input#autocomplete").autocomplete({
-                source: ["c++", "java", "php", "coldfusion", "javascript", "asp", "ruby"]
+            $( "#autocomplete" ).autocomplete({
+                source: function( request, response ) {
+                    $.ajax({
+                        url: "/search",
+                        dataType: "json",
+                        data: $('form.form-search').serialize(),
+                        success: function( data ) {
+                            response(data);
+                        }
+                    });
+                },
+                minLength: 2,
+                delay: 500,
+                select: function( event, ui ) {
+                    console.log( ui.item ?
+                        "Selected: " + ui.item.label :
+                        "Nothing selected, input was " + this.value);
+                }
+            });
+            $('form.form-search').submit(function(e) {
+                $.ajax({
+                    url: "/gem",
+                    dataType: "html",
+                    data: $('form.form-search').serialize(),
+                    success: function(data) {
+                        $('#matches').html(data);
+                    }
+                });
+                e.preventDefault();
             });
         });
     </script>
-
-  </body>
-</html>
+{% endblock %}
