@@ -1,0 +1,65 @@
+{% if not matches %}
+    <h3>No matches found.</h3>
+    {% if not valid_code %}
+    <p>{{ q }} does not appear to be a valid
+            {% if forward == "1"%}
+                ICD-9-CM
+                {% if diagnosis == "1" %}
+                    diagnosis
+                {% else %}
+                    procedure
+                {% endif %}
+            {% else %}
+                ICD-10-{% if diagnosis == "1" %}CM{% else %}PCS{% endif %}
+            {% endif %}
+            code.</p>
+    {% endif %}
+{% endif %}
+<table width="100%" class="table-condensed table-bordered table-striped">
+    <tbody>
+{% for match in matches %}
+    <tr>
+        {% if match.no_map %}
+            <td>
+                <div class="alert alert-danger">
+                    No approximate mapping found for this particular code.
+                </div>
+            </td>
+        {% else %}
+            <td>
+                {% if forward %}
+                    {{ match.icd10code_formatted() }}
+                    </td><td>
+                    {{ match.icd10code_description() }}
+                {% else %}
+                    {{ match.icd9code_formatted() }}
+                    </td><td>
+                    {{ match.icd9code_description() }}
+                {% endif %}
+            </td>
+            <td>
+                <nobr>
+                {% if match.approximate %}
+                    <span class="label label-important">Approximate Match</span>
+                {% else %}
+                    <span class="label label-success">Exact Match</span>
+                {% endif %}
+                </nobr>
+            </td>
+            {% if match.combination %}
+                <td>
+                    <nobr><span class="label label-warning">Combination</span></nobr>
+                </td>
+            {% endif %}
+            {% if match.choice_list %}
+                <td>
+                    <nobr><span class="label label-info">Choice {{ match.choice_list }}</span></nobr>
+                </td>
+            {% endif %}
+        {% endif %}
+    </tr>
+{% endfor %}
+    </tbody>
+</table>
+
+
