@@ -1,4 +1,6 @@
-To create the tables (SQLite for now) import icd9helper.db and run db.create_all()
+To create the tables (SQLite for now)
+>>> from icd10helper import db
+>>> db.create_all()
 
 Data Sources:
 
@@ -17,3 +19,9 @@ Need to import the V and E codes (ICD9 Diagnosis)
 # NOTES
 Would it be easier to just import the codes with them preformatted?
     - Yes.
+    - No, because then we don't know whether to add a dot 
+        - can we only add when searching by code specifically?
+
+
+
+Trying to get dot worked out. :(

@@ -19,11 +19,14 @@ def about():
 def search():
     forward = request.args.get('forward')
     diagnosis = request.args.get('diagnosis')
+    code_type = 'icd9'
+    if forward == '0':
+        code_type = 'icd10'
     q = request.args.get('q')
     if forward == '1':
         matches = Icd9Code.query.filter(
                 or_(
-                    Icd9Code.code.like("%%%s%%" % q),
+                    Icd10Code.code.like("%%%s%%" % __format_code(code=q, code_type=code_type, diagnosis=(diagnosis == '1'))),
                     Icd9Code.description.like("%%%s%%" % q),
                 ),
 
@@ -32,15 +35,15 @@ def search():
     else:
         matches = Icd10Code.query.filter(
                 or_(
-                    Icd10Code.code.like("%%%s%%" % q.replace('.', '')),
+                    Icd10Code.code.like("%%%s%%" % __format_code(code=q, code_type=code_type, diagnosis=(diagnosis == '1'))),
                     Icd10Code.description.like("%%%s%%" % q),
                 ),
         ).all()
 
     if diagnosis:
-        return json.dumps([dict( label="%s.%s - %s" % (m.code[0:3], m.code[3:], m.description), value="%s.%s" % (m.code[0:3], m.code[3:]),) for m in matches])
+        return json.dumps([dict( label="%s - %s" % (m.code, m.description), value="%s" % (m.code),) for m in matches])
     else:
-        return json.dumps([dict( label="%s.%s - %s" % (m.code[0:2], m.code[2:], m.description), value="%s.%s" % (m.code[0:2], m.code[2:]),) for m in matches])
+        return json.dumps([dict( label="%s - %s" % (m.code, m.description), value="%s" % (m.code),) for m in matches])
 
 @app.route("/gem", methods=['GET'])
 def gem():
@@ -94,14 +97,6 @@ class Icd9Code(db.Model):
     description = db.Column(db.String(255))
     diagnosis = db.Column(db.Boolean, default=False)
 
-    def code_formatted(self):
-        if self.diagnosis:
-            breakpoint = 2
-        else:
-            breakpoint = 3
-        return "%s.%s" % (self.icd9code[0:breakpoint], self.icd9code[breakpoint:])
-
-
 class Mapper(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     forward = db.Column(db.Boolean, default=False)
@@ -151,6 +146,17 @@ class Mapper(db.Model):
             return icd9code.description
         else:
             return ''
+
+def __format_code(code='', code_type="icd9", diagnosis=True):
+    if code_type == "icd9":
+        if diagnosis and len(code) > 3:
+            code = "%s.%s" % (code[:3], code[3:])
+        elif not diagnosis and len(code) > 2: # procedure
+            code = "%s.%s" % (code[:2], code[2:])
+    else: # icd10
+        if diagnosis and len(code) > 3:
+            code = "%s.%s" % (code[:3], code[3:])
+    return code
 
 if __name__ == "__main__":
     app.run(debug=True)
