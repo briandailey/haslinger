@@ -49,7 +49,7 @@ def read_icd9_codes():
     # px
     with codecs.open('sources/CMS29_DESC_LONG_SG.txt', 'rb', encoding='latin-1') as f:
         for line in f.readlines():
-            code = line[0:6].strip()
+            code = line[0:5].strip()
             if len(code) > 2:
                 code = "%s.%s" % (code[:2], code[2:])
             code = Icd9Code(
@@ -127,7 +127,7 @@ def read_icd9_gem_files():
     db.session.commit()
 
 if __name__ == "__main__":
-    # read_icd10_gem_files()
-    # read_icd9_gem_files()
+    read_icd10_gem_files()
+    read_icd9_gem_files()
     read_icd10_codes()
     read_icd9_codes()
