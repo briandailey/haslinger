@@ -1,10 +1,11 @@
-from flask import Flask, render_template, request
-from sqlalchemy import or_, and_
-from flaskext.sqlalchemy import SQLAlchemy
 import json
+import os
+from flask import Flask, render_template, request
+from flask.ext.sqlalchemy import SQLAlchemy
+from sqlalchemy import or_, and_
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////Users/brian/Projects/icd10helper.com/db/test.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://brian:br1@n@localhost/icd10'
 db = SQLAlchemy(app)
 
 @app.route("/")
@@ -85,7 +86,7 @@ def gem():
 class Icd10Code(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     order_no = db.Column(db.String(5)) # Order number
-    code = db.Column(db.String(5)) # ICD-10-CM or ICD-10-PCS code. Dots are not included
+    code = db.Column(db.String(8)) # ICD-10-CM or ICD-10-PCS code. Dots are not included
     ub04_valid = db.Column(db.Boolean, default=False) # Valid for submission on a UB04
     description = db.Column(db.String(60)) # Short description
     long_desc = db.Column(db.String(300)) # Long description
@@ -93,14 +94,14 @@ class Icd10Code(db.Model):
 
 class Icd9Code(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    code = db.Column(db.String(16))
+    code = db.Column(db.String(6))
     description = db.Column(db.String(255))
     diagnosis = db.Column(db.Boolean, default=False)
 
 class Mapper(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     forward = db.Column(db.Boolean, default=False)
-    icd10code = db.Column(db.String(5))
+    icd10code = db.Column(db.String(8))
     icd9code = db.Column(db.String(5))
     diagnosis = db.Column(db.Boolean, default=False) # If not a diagnosis, then a procedure.
     approximate = db.Column(db.Boolean, default=False)
@@ -159,4 +160,7 @@ def __format_code(code='', code_type="icd9", diagnosis=True):
     return code
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    # Bind to PORT if defined, otherwise default to 5000.
+    port = int(os.environ.get('PORT', 5000))
+    debug = os.environ.get('DEBUG', True)
+    app.run(host='0.0.0.0', port=port)
