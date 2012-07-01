@@ -2,3 +2,5 @@
 sources
 env
 db
+*.swp
+*.pyc
