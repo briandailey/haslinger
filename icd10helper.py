@@ -2,7 +2,6 @@ import json
 import os
 from flask import Flask, render_template, request
 from flask.ext.sqlalchemy import SQLAlchemy
-from sqlalchemy import or_, and_
 from db import Icd9Code, Icd10Code, Mapper
 
 app = Flask(__name__)
@@ -51,30 +50,16 @@ def gem():
     forward = request.args.get('forward') == "1"
     diagnosis = request.args.get('diagnosis')
     q = request.args.get('q')
-    code = q.replace('.', '').strip()
-    # If going forward, starting with an icd9 code.
 
-    valid_code = False
-    matches = []
-    if forward:
-        if Icd9Code.is_valid_code(code=code, diagnosis=diagnosis):
-            valid_code = True
-            matches = Mapper.query.filter(
-                    and_(
-                        Mapper.forward==True,
-                        Mapper.icd9code==code,
-                        Mapper.diagnosis==diagnosis,)
-                ).all()
-    else:
-        if Icd10Code.query.filter(and_(Icd10Code.code==code, Icd10Code.diagnosis==diagnosis)).count() == 1:
-            valid_code = True
-            matches = Mapper.query.filter(
-                    and_(
-                        Mapper.forward==False,
-                        Mapper.icd10code==code,
-                        Mapper.diagnosis==diagnosis,)
-                ).all()
-    return render_template('gem.html', 
+    try:
+        matches = Mapper.get_mapped_codes(
+                code=q,
+                forward=forward,
+                diagnosis=diagnosis)
+    except InvalidIcdCode:
+        valid_code = False
+
+    return render_template('gem.html',
             q=q,
             matches=matches,
             forward=forward,
