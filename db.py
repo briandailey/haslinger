@@ -1,5 +1,12 @@
+from flask import Flask
 from flask.ext.sqlalchemy import SQLAlchemy
-from sqlalchemy import or_, and_
+
+app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://brian:br1@n@localhost/icd10'
+db = SQLAlchemy(app)
+
+
+db = SQLAlchemy(app)
 
 class Icd10Code(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -15,6 +22,10 @@ class Icd9Code(db.Model):
     code = db.Column(db.String(6))
     description = db.Column(db.String(255))
     diagnosis = db.Column(db.Boolean, default=False)
+
+    @classmethod
+    def is_valid_code(cls, code, diagnosis):
+        return cls.query.filter(and_(cls.code==code, cls.diagnosis==diagnosis)).count() > 0
 
 class Mapper(db.Model):
     id = db.Column(db.Integer, primary_key=True)
