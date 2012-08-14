@@ -4,6 +4,7 @@
     <p>{{ q }} does not appear to be a valid
             {% if forward == "1"%}
                 ICD-9-CM
+                {{ diagnosis }}
                 {% if diagnosis == "1" %}
                     diagnosis
                 {% else %}

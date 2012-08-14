@@ -7,7 +7,6 @@ from db import Icd9Code, Icd10Code, Mapper
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://brian:br1@n@localhost/icd10'
-db = SQLAlchemy(app)
 
 @app.route("/")
 def index():
@@ -58,7 +57,7 @@ def gem():
     valid_code = False
     matches = []
     if forward:
-        if Icd9Code.query.filter(and_(Icd9Code.code==code, Icd9Code.diagnosis==diagnosis)).count() > 9:
+        if Icd9Code.is_valid_code(code=code, diagnosis=diagnosis):
             valid_code = True
             matches = Mapper.query.filter(
                     and_(
