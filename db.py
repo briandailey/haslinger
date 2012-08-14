@@ -1,5 +1,6 @@
 from flask import Flask
 from flask.ext.sqlalchemy import SQLAlchemy
+from sqlalchemy import or_, and_
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://brian:br1@n@localhost/icd10'
@@ -38,6 +39,42 @@ class Mapper(db.Model):
     combination = db.Column(db.Boolean, default=False)
     scenario = db.Column(db.Integer)
     choice_list = db.Column(db.Integer)
+
+    class InvalidIcdCode(Exception):
+        pass
+
+    class InvalidIcd9Code(InvalidIcdCode):
+        pass
+
+    class InvalidIcd10Code(InvalidIcdCode):
+        pass
+
+    @classmethod
+    def get_mapped_codes(cls, code='', forward=True, diagnosis=True):
+        """ Note that ICD9 code must be passed in with the dot, but
+        the dot must be stripped for Mapper. """
+        if forward:
+            if not Icd9Code.is_valid_code(code=code, diagnosis=diagnosis):
+                raise cls.InvalidIcd9Code('%s is an invalid ICD9 code.' % code)
+
+            matches = Mapper.query.filter(
+                    and_(
+                        Mapper.forward==True,
+                        Mapper.icd9code==code.replace('.', ''),
+                        Mapper.diagnosis==diagnosis,)
+                ).all()
+        else:
+            if not Icd10Code.query.filter(and_(Icd10Code.code==code, Icd10Code.diagnosis==diagnosis)).count() == 1:
+                raise cls.InvalidIcd10Code('Invalid ICD10 code.')
+
+            matches = Mapper.query.filter(
+                    and_(
+                        Mapper.forward==False,
+                        Mapper.icd10code==code.replace('.', ''),
+                        Mapper.diagnosis==diagnosis,)
+                ).all()
+
+        return matches
 
     def icd9code_formatted(self):
         if self.icd9code == 'NoDx':
