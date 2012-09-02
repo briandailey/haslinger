@@ -50,6 +50,7 @@ def gem():
     forward = request.args.get('forward') == "1"
     diagnosis = request.args.get('diagnosis')
     q = request.args.get('q')
+    valid_code = True
 
     try:
         matches = Mapper.get_mapped_codes(
