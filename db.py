@@ -79,7 +79,6 @@ class Mapper(db.Model):
     def icd9code_formatted(self):
         if self.icd9code == 'NoDx':
             return self.icd9code
-        print self.diagnosis
         if self.diagnosis:
             breakpoint = 2
         else:
