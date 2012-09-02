@@ -1,8 +1,8 @@
 import json
 import os
 from flask import Flask, render_template, request
-from flask.ext.sqlalchemy import SQLAlchemy
 from db import Icd9Code, Icd10Code, Mapper
+from sqlalchemy import or_, and_
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://brian:br1@n@localhost/icd10'
@@ -83,4 +83,4 @@ if __name__ == "__main__":
     # Bind to PORT if defined, otherwise default to 5000.
     port = int(os.environ.get('PORT', 5000))
     debug = os.environ.get('DEBUG', True)
-    app.run(host='0.0.0.0', port=port)
+    app.run(host='0.0.0.0', port=port, debug=debug)
