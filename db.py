@@ -1,11 +1,17 @@
+import os
+import json
 from flask import Flask
 from flask.ext.sqlalchemy import SQLAlchemy
 from sqlalchemy import and_
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://brian:br1@n@localhost/icd10'
-db = SQLAlchemy(app)
 
+if os.path.exists('/home/bdailey/webapps/icd10helper/config.json'):
+    # pull from config.
+    config = json.loads(open('/home/bdailey/webapps/icd10helper/config.json').read())
+    app.config['SQLALCHEMY_DATABASE_URI'] = config['SQLALCHEMY_DATABASE_URI']
+else:
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://icd:icd@localhost/icd10'
 
 db = SQLAlchemy(app)
 
@@ -62,7 +68,7 @@ class Mapper(db.Model):
                         Mapper.forward==True,
                         Mapper.icd9code==code.replace('.', ''),
                         Mapper.diagnosis==diagnosis,)
-                ).all()
+                ).order_by('choice_list', 'icd10code').all()
         else:
             if not Icd10Code.query.filter(and_(Icd10Code.code==code, Icd10Code.diagnosis==diagnosis)).count() == 1:
                 raise cls.InvalidIcd10Code('Invalid ICD10 code.')
@@ -80,9 +86,9 @@ class Mapper(db.Model):
         if self.icd9code == 'NoDx':
             return self.icd9code
         if self.diagnosis:
-            breakpoint = 2
-        else:
             breakpoint = 3
+        else:
+            breakpoint = 2
         return "%s.%s" % (self.icd9code[0:breakpoint], self.icd9code[breakpoint:])
 
     def icd10code_formatted(self):
@@ -90,9 +96,9 @@ class Mapper(db.Model):
             return self.icd9code
         if self.diagnosis:
             breakpoint = 3
+            return "%s.%s" % (self.icd10code[0:breakpoint], self.icd10code[breakpoint:])
         else:
-            breakpoint = 4
-        return "%s.%s" % (self.icd10code[0:breakpoint], self.icd10code[breakpoint:])
+            return self.icd10code
 
     def icd10code_description(self):
         """ Not terribly efficient, no. """

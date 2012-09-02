@@ -1,11 +1,10 @@
-import json
 import os
+import json
 from flask import Flask, render_template, request
 from db import Icd9Code, Icd10Code, Mapper
 from sqlalchemy import or_
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://brian:br1@n@localhost/icd10'
 
 @app.route("/")
 def index():

@@ -2,9 +2,8 @@
     <h3>No matches found.</h3>
     {% if not valid_code %}
     <p>{{ q }} does not appear to be a valid
-            {% if forward == "1"%}
+            {% if forward %}
                 ICD-9-CM
-                {{ diagnosis }}
                 {% if diagnosis == "1" %}
                     diagnosis
                 {% else %}
@@ -15,7 +14,8 @@
             {% endif %}
             code.</p>
     {% endif %}
-{% endif %}
+{% else %}
+<h3>Matches for {{ q }}</h3>
 <table width="100%" class="table-condensed table-bordered table-striped">
     <tbody>
 {% for match in matches %}
@@ -62,5 +62,5 @@
 {% endfor %}
     </tbody>
 </table>
-
+{% endif %}
 

@@ -1,4 +1,4 @@
-from icd10helper import Icd10Code, db, Mapper, Icd9Code
+from db import Icd10Code, db, Mapper, Icd9Code
 import codecs
 
 def read_icd10_codes():
@@ -109,7 +109,7 @@ def read_icd9_gem_files():
                     diagnosis = True,
             )
             db.session.add(mapping)
-    with open('sources/gem_pcsi9.txt', 'r') as f:
+    with open('sources/gem_i9pcs.txt', 'r') as f:
         for line in f.readlines():
             mapping = Mapper(
                     forward = True,
@@ -129,5 +129,5 @@ def read_icd9_gem_files():
 if __name__ == "__main__":
     read_icd10_gem_files()
     read_icd9_gem_files()
-    read_icd10_codes()
-    read_icd9_codes()
+    # read_icd10_codes()
+    # read_icd9_codes()

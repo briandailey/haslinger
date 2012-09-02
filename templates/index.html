@@ -3,43 +3,50 @@
     <div class="container">
         <header id="overview" class="jumbotron subhead">
             <h1>ICD-9 / ICD-10 Helper</h1>
-            <p class="lead">A quick, convenient way to lookup mapping across ICD-9 and ICD-10 codes.</p>
+            <p class="lead">
+            A quick, convenient way to look up mapping
+            across ICD-9 and ICD-10 codes. <a href="/about">More info here.</a>
+            </p>
         </header>
         <div class="search">
-            <form class="form-search" action="/test">
-                <table class="options">
-                    <tr>
-                        <th>Direction</th>
-                        <th>Code Type</th>
-                    </tr>
-                    <tr>
-                        <td>
-                            <input type="radio" name="forward" value="1" checked="checked"/>
-                            ICD-9 &rarr; ICD-10
-                        </td>
-                        <td>
-                            <input type="radio" name="diagnosis" value="1" checked="checked" />
-                            Diagnosis
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <input type="radio" name="forward" value="0" />
-                            ICD-9 &larr; ICD-10
-                        </td>
-                        <td>
-                            <input type="radio" name="diagnosis" value="0" />
-                            Procedure
-                        </td>
-                    </tr>
+            <form class="form-search" action="/gem">
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Direction</th>
+                            <th>Code Type</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <input type="radio" name="forward" value="1" checked="checked"/>
+                                ICD-9 &rarr; ICD-10
+                            </td>
+                            <td>
+                                <input type="radio" name="diagnosis" value="1" checked="checked" />
+                                Diagnosis
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input type="radio" name="forward" value="0" />
+                                ICD-9 &larr; ICD-10
+                            </td>
+                            <td>
+                                <input type="radio" name="diagnosis" value="0" />
+                                Procedure
+                            </td>
+                        </tr>
+                    </tbody>
                 </table>
-                <br/>
                 <div class="input-append">
-                    <input type="text" name="q" id="autocomplete"/>
-                    <a href="{{ url_for('about') }}"><span class="add-on">?</span></a>
-                    &nbsp;
-                    <button class="btn" type="submit">Go</button>
+                    <input placeholder="Start typing a code or description here." type="text" name="q" id="autocomplete" class="span4 search-query" />
+                    <button class="btn btn-primary" type="submit">Go</button>
                 </div>
+                <br class="clearfix" />
+                <br/>
+                <a href="/about#how">How do I use this?</a>
             </form>
         </div>
         <div id="matches"></div>
@@ -48,7 +55,7 @@
                 <h2>Glossary</h2>
             </div>
             <div class="row">
-                <p>All glossary explanations are taken from the <i>General Equialence Mappings, Documentation for Technical Users</i>.</p>
+                <p>All glossary explanations are taken from the <em><a href="https://www.cms.gov/Medicare/Coding/ICD10/downloads/GemsTechDoc.pdf">General Equivalence Mappings, Documentation for Technical Users</a></em>.</p>
                 <div class="span6">
                     <p>
                         <span class="label label-important">Approximate Match</span>
@@ -67,6 +74,13 @@
                     <span class="label label-warning">Combination</span>
                     <br/>
                     Indicates that a cluster of target system codes—consisting of two, three, four, or more codes— taken together provide an adequate translation of the source system code.
+                    </p>
+                </div>
+                <div class="span6">
+                    <p>
+                    <span class="label label-info">Choice 1</span>
+                    <br/>
+                    Indicates that there is a pick-list of choices that work together. Each instance of a complete translation is referred to as a "cluster."
                     </p>
                 </div>
             </div>

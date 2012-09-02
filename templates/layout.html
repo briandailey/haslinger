@@ -46,12 +46,23 @@
           padding: 5px;
           margin: 2px;
       }
-      /* Give room for appending, button (chrome issue) */
-      .input-append { width: 300px; }
     </style>
   </head>
 
   <body>
         {% block body %}{% endblock %}
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-34503263-1']);
+  _gaq.push(['_setDomainName', 'icd10helper.com']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
   </body>
 </html>
