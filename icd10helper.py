@@ -2,7 +2,7 @@ import json
 import os
 from flask import Flask, render_template, request
 from db import Icd9Code, Icd10Code, Mapper
-from sqlalchemy import or_, and_
+from sqlalchemy import or_
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://brian:br1@n@localhost/icd10'
@@ -51,13 +51,14 @@ def gem():
     diagnosis = request.args.get('diagnosis')
     q = request.args.get('q')
     valid_code = True
+    matches = []
 
     try:
         matches = Mapper.get_mapped_codes(
                 code=q,
                 forward=forward,
                 diagnosis=diagnosis)
-    except InvalidIcdCode:
+    except Mapper.InvalidIcdCode:
         valid_code = False
 
     return render_template('gem.html',
