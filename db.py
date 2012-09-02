@@ -98,7 +98,7 @@ class Mapper(db.Model):
         """ Not terribly efficient, no. """
         if self.icd10code == 'NoDx':
             return ''
-        icd10code = Icd10Code.query.filter(Icd10Code.code==self.icd10code).first()
+        icd10code = Icd10Code.query.filter(Icd10Code.code==self.icd10code_formatted()).first()
         if icd10code:
             return icd10code.long_desc
         else:
@@ -107,7 +107,7 @@ class Mapper(db.Model):
     def icd9code_description(self):
         if self.icd9code == 'NoDx':
             return ''
-        icd9code = Icd9Code.query.filter(Icd9Code.code==self.icd9code).first()
+        icd9code = Icd9Code.query.filter(Icd9Code.code==self.icd9code_formatted()).first()
         if icd9code:
             return icd9code.description
         else:
