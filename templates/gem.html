@@ -1,3 +1,4 @@
+<div class="well">
 {% if not matches %}
     <h3>No matches found.</h3>
     {% if not valid_code %}
@@ -15,8 +16,8 @@
             code.</p>
     {% endif %}
 {% else %}
-<h3>Matches for {{ q }}</h3>
-<table width="100%" class="table-condensed table-bordered table-striped">
+<h4>Matches for {{ q }}</h4>
+<table width="100%" class="table table-bordered" style="background-color: #fff;">
     <tbody>
 {% for match in matches %}
     <tr>
@@ -63,4 +64,4 @@
     </tbody>
 </table>
 {% endif %}
-
+</div>
