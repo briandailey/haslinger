@@ -114,6 +114,7 @@
                 }
             });
             $('form.form-search').submit(function(e) {
+                if (_gaq) _gaq.push(['_trackEvent', 'icd10helper', 'search', 'search', $('#autcomplete').val()]);
                 $.ajax({
                     url: "/gem",
                     dataType: "html",
