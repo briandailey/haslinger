@@ -1,7 +1,3 @@
-To create the tables (SQLite for now)
->>> from icd10helper import db
->>> db.create_all()
-
 Data Sources:
 
 2012 ICD10CM and GEMS
@@ -15,13 +11,3 @@ https://www.cms.gov/ICD9ProviderDiagnosticCodes/Downloads/cmsv29_master_descript
 
 # TODO
 Need to import the V and E codes (ICD9 Diagnosis)
-
-# NOTES
-Would it be easier to just import the codes with them preformatted?
-    - Yes.
-    - No, because then we don't know whether to add a dot 
-        - can we only add when searching by code specifically?
-
-
-
-Trying to get dot worked out. :(
