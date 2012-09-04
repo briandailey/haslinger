@@ -1,6 +1,5 @@
 import os
-import json
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, json
 from db import Icd9Code, Icd10Code, Mapper
 from sqlalchemy import or_
 
