@@ -1,6 +1,5 @@
 import os
-import json
-from flask import Flask
+from flask import Flask, json
 from flask.ext.sqlalchemy import SQLAlchemy
 from sqlalchemy import and_
 
