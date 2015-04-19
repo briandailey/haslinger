@@ -10,7 +10,7 @@ if os.path.exists('/home/bdailey/webapps/icd10helper/config.json'):
     config = json.loads(open('/home/bdailey/webapps/icd10helper/config.json').read())
     app.config['SQLALCHEMY_DATABASE_URI'] = config['SQLALCHEMY_DATABASE_URI']
 else:
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://icd:icd@localhost/icd10'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://icd:icd@localhost/icd10'
 
 db = SQLAlchemy(app)
 
