@@ -5,13 +5,16 @@ from sqlalchemy import or_
 
 app = Flask(__name__)
 
+
 @app.route("/")
 def index():
     return render_template('index.html')
 
+
 @app.route("/about")
 def about():
     return render_template('about.html')
+
 
 @app.route("/search", methods=['GET'])
 def search():
@@ -23,25 +26,25 @@ def search():
     q = request.args.get('q')
     if forward == '1':
         matches = Icd9Code.query.filter(
-                or_(
-                    Icd9Code.code.like("%%%s%%" % __format_code(code=q, code_type=code_type, diagnosis=(diagnosis == '1'))),
-                    Icd9Code.description.like("%%%s%%" % q),
-                ),
-
-        ).filter(Icd9Code.diagnosis==diagnosis).limit(10)
+            or_(
+                Icd9Code.code.like("%%%s%%" % __format_code(code=q, code_type=code_type, diagnosis=(diagnosis == '1'))),
+                Icd9Code.description.like("%%%s%%" % q),
+            ),
+        ).filter(Icd9Code.diagnosis == diagnosis).limit(10)
         # todo: add implied decimal to description
     else:
         matches = Icd10Code.query.filter(
-                or_(
-                    Icd10Code.code.like("%%%s%%" % __format_code(code=q, code_type=code_type, diagnosis=(diagnosis == '1'))),
-                    Icd10Code.description.like("%%%s%%" % q),
-                ),
+            or_(
+                Icd10Code.code.like("%%%s%%" % __format_code(code=q, code_type=code_type, diagnosis=(diagnosis == '1'))),
+                Icd10Code.description.like("%%%s%%" % q),
+            ),
         ).all()
 
     if diagnosis:
-        return json.dumps([dict( label="%s - %s" % (m.code, m.description), value="%s" % (m.code),) for m in matches])
+        return json.dumps([dict(label="%s - %s" % (m.code, m.description), value="%s" % (m.code),) for m in matches])
     else:
-        return json.dumps([dict( label="%s - %s" % (m.code, m.description), value="%s" % (m.code),) for m in matches])
+        return json.dumps([dict(label="%s - %s" % (m.code, m.description), value="%s" % (m.code),) for m in matches])
+
 
 @app.route("/gem", methods=['GET'])
 def gem():
@@ -53,27 +56,31 @@ def gem():
 
     try:
         matches = Mapper.get_mapped_codes(
-                code=q,
-                forward=forward,
-                diagnosis=diagnosis)
+            code=q,
+            forward=forward,
+            diagnosis=diagnosis)
     except Mapper.InvalidIcdCode:
         valid_code = False
 
-    return render_template('gem.html',
-            q=q,
-            matches=matches,
-            forward=forward,
-            diagnosis=diagnosis,
-            valid_code=valid_code,
-            )
+    return render_template(
+        'gem.html',
+        q=q,
+        matches=matches,
+        forward=forward,
+        diagnosis=diagnosis,
+        valid_code=valid_code,
+    )
+
 
 def __format_code(code='', code_type="icd9", diagnosis=True):
     if code_type == "icd9":
         if diagnosis and len(code) > 3:
             code = "%s.%s" % (code[:3], code[3:])
-        elif not diagnosis and len(code) > 2: # procedure
+        elif not diagnosis and len(code) > 2:
+            # procedure
             code = "%s.%s" % (code[:2], code[2:])
-    else: # icd10
+    else:
+        # icd10
         if diagnosis and len(code) > 3:
             code = "%s.%s" % (code[:3], code[3:])
     return code

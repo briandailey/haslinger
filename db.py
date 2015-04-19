@@ -10,18 +10,20 @@ if os.path.exists('/home/bdailey/webapps/icd10helper/config.json'):
     config = json.loads(open('/home/bdailey/webapps/icd10helper/config.json').read())
     app.config['SQLALCHEMY_DATABASE_URI'] = config['SQLALCHEMY_DATABASE_URI']
 else:
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://icd:icd@localhost/icd10'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://icd:icd@localhost/icd10'
 
 db = SQLAlchemy(app)
 
+
 class Icd10Code(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    order_no = db.Column(db.String(5)) # Order number
-    code = db.Column(db.String(8)) # ICD-10-CM or ICD-10-PCS code. Dots are not included
-    ub04_valid = db.Column(db.Boolean, default=False) # Valid for submission on a UB04
-    description = db.Column(db.String(60)) # Short description
-    long_desc = db.Column(db.String(300)) # Long description
-    diagnosis = db.Column(db.Boolean, default=False) # If not a diagnosis, then a procedure.
+    order_no = db.Column(db.String(5))          # Order number
+    code = db.Column(db.String(8))              # ICD-10-CM or ICD-10-PCS code. Dots are not included
+    ub04_valid = db.Column(db.Boolean, default=False)  # Valid for submission on a UB04
+    description = db.Column(db.String(60))      # Short description
+    long_desc = db.Column(db.String(300))       # Long description
+    diagnosis = db.Column(db.Boolean, default=False)        # If not a diagnosis, then a procedure.
+
 
 class Icd9Code(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -31,14 +33,15 @@ class Icd9Code(db.Model):
 
     @classmethod
     def is_valid_code(cls, code, diagnosis):
-        return cls.query.filter(and_(cls.code==code, cls.diagnosis==diagnosis)).count() > 0
+        return cls.query.filter(and_(cls.code == code, cls.diagnosis == diagnosis)).count() > 0
+
 
 class Mapper(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     forward = db.Column(db.Boolean, default=False)
     icd10code = db.Column(db.String(8))
     icd9code = db.Column(db.String(5))
-    diagnosis = db.Column(db.Boolean, default=False) # If not a diagnosis, then a procedure.
+    diagnosis = db.Column(db.Boolean, default=False)    # If not a diagnosis, then a procedure.
     approximate = db.Column(db.Boolean, default=False)
     no_map = db.Column(db.Boolean, default=False)
     combination = db.Column(db.Boolean, default=False)
@@ -63,21 +66,21 @@ class Mapper(db.Model):
                 raise cls.InvalidIcd9Code('%s is an invalid ICD9 code.' % code)
 
             matches = Mapper.query.filter(
-                    and_(
-                        Mapper.forward==True,
-                        Mapper.icd9code==code.replace('.', ''),
-                        Mapper.diagnosis==diagnosis,)
-                ).order_by('choice_list', 'icd10code').all()
+                and_(
+                    Mapper.forward == True,     # noqa
+                    Mapper.icd9code == code.replace('.', ''),
+                    Mapper.diagnosis == diagnosis,)
+            ).order_by('choice_list', 'icd10code').all()
         else:
-            if not Icd10Code.query.filter(and_(Icd10Code.code==code, Icd10Code.diagnosis==diagnosis)).count() == 1:
+            if not Icd10Code.query.filter(and_(Icd10Code.code == code, Icd10Code.diagnosis == diagnosis)).count() == 1:
                 raise cls.InvalidIcd10Code('Invalid ICD10 code.')
 
             matches = Mapper.query.filter(
-                    and_(
-                        Mapper.forward==False,
-                        Mapper.icd10code==code.replace('.', ''),
-                        Mapper.diagnosis==diagnosis,)
-                ).all()
+                and_(
+                    Mapper.forward == False,    # noqa
+                    Mapper.icd10code == code.replace('.', ''),
+                    Mapper.diagnosis == diagnosis,)
+            ).all()
 
         return matches
 
@@ -103,7 +106,7 @@ class Mapper(db.Model):
         """ Not terribly efficient, no. """
         if self.icd10code == 'NoDx':
             return ''
-        icd10code = Icd10Code.query.filter(Icd10Code.code==self.icd10code_formatted()).first()
+        icd10code = Icd10Code.query.filter(Icd10Code.code == self.icd10code_formatted()).first()
         if icd10code:
             return icd10code.long_desc
         else:
@@ -112,7 +115,7 @@ class Mapper(db.Model):
     def icd9code_description(self):
         if self.icd9code == 'NoDx':
             return ''
-        icd9code = Icd9Code.query.filter(Icd9Code.code==self.icd9code_formatted()).first()
+        icd9code = Icd9Code.query.filter(Icd9Code.code == self.icd9code_formatted()).first()
         if icd9code:
             return icd9code.description
         else:
