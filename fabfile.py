@@ -3,8 +3,10 @@ from fabric.api import env, local, run, cd, put
 
 env.user = "bdailey"
 
+
 def restart():
     run('/home/bdailey/webapps/icd10helper/apache2/bin/restart', shell=True, pty=False)
+
 
 def build_archive(tag):
     dt = datetime.now().strftime("%Y%m%d%H%M%S")
@@ -13,6 +15,7 @@ def build_archive(tag):
         "datestamp": env.datestamp,
         'tag': tag
     })
+
 
 def deploy_code(tag="HEAD"):
     local('tar czf deploy.tgz *.py requirements.txt templates')
@@ -23,6 +26,7 @@ def deploy_code(tag="HEAD"):
         run("find . -name '*.pyc' -print0|xargs -0 rm")
     local('rm deploy.tgz')
     restart()
+
 
 def deploy_static(tag="HEAD"):
     local('cd static && tar czf static.tgz * && mv static.tgz ..')
