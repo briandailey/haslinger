@@ -1,5 +1,4 @@
 ecdsa==0.13
-Fabric==1.10.1
 Flask==0.10.1
 Flask-SQLAlchemy==2.0
 itsdangerous==0.24
