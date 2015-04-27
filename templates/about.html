@@ -1,15 +1,15 @@
 {% extends "layout.html" %}
 {% block body %}
-<div class="container">
+<div class="container transparent-well">
     <div id="about">
+        <div class="pull-right"><a href="/" class="btn"><i class="glyphicon glyphicon-arrow-left"></i> Back</a></div>
         <div class="page-header">
             <h1>More Information</h1>
         </div>
-        <p><a href="/" class="btn"><i class="icon-arrow-left"></i> Back</a></p>
 
         <h3><a name="how"></a>How do I use this?</h3>
         <p>If you already know the ICD9 or ICD10 code that you want to use, just type it in and hit "Enter."</p>
-        <p>If you want to search for a code, just start by typing the term (e.g., "knee") and then choose from the list of matching codes. When you are ready, click "Go" to show matches.</p>
+        <p>If you want to search for a code, just start by typing the term (e.g., "knee") and then choose from the list of matching codes. When you are ready, click "Crosswalk Code" to show matches.</p>
         <p>In some cases, there is an exact match. However, in many cases there are ambiguities in translation that will require knowledge about the original case to make an appropriate translation.</p>
 
         <h3>What is your data source?</h3>
@@ -22,14 +22,14 @@
         <h3>Glossary</h3>
         <p>All glossary explanations are taken from the <em><a href="https://www.cms.gov/Medicare/Coding/ICD10/downloads/GemsTechDoc.pdf">General Equivalence Mappings, Documentation for Technical Users [PDF]</a></em>.</p>
         <div class="row-fluid">
-            <div class="span6">
+            <div class="col-md-6">
                 <p>
                     <span class="label label-important">Approximate Match</span>
                     <br/>
                     Indicates complete meaning of the source and the target are not considered equivalent.
                 </p>
             </div>
-            <div class="span6">
+            <div class="col-md-6">
                 <p><span class="label label-success">Exact Match</span>
                     <br/>
                     Indicates the complete meaning of the source and the target are considered equivalent and the source and target translate only to each other in both GEMs files.
@@ -37,14 +37,14 @@
             </div>
         </div>
         <div class="row-fluid">
-            <div class="span6">
+            <div class="col-md-6">
                 <p>
                 <span class="label label-warning">Combination</span>
                 <br/>
                 Indicates that a cluster of target system codes—consisting of two, three, four, or more codes— taken together provide an adequate translation of the source system code.
                 </p>
             </div>
-            <div class="span6">
+            <div class="col-md-6">
                 <p>
                 <span class="label label-info">Choice 1</span>
                 <br/>
@@ -54,19 +54,22 @@
         </div>
         <br/>
 
-        <div class="row-fluid">
-            <div class="span5 well well-small">
+        <div class="row">
+            <div class="col-md-1"></div>
+            <div class="col-md-4 well well-small">
                 <h3>What are ICD9/ICD10 codes?</h3>
                 <p>If you're not sure, this site probably isn't helpful. ICD is an abbreviation for <em>International Statistical Classification of Diseases and Related Health Problems</em>. This is a billing coding system that applies to hospital visits.</p>
             </div>
-            <div class="span5 well well-small">
+            <div class="col-md-1"></div>
+            <div class="col-md-5 well well-small">
                 <h3>Who built this?</h3>
                 <img src="/static/img/brian.png" align="left" style="margin: 10px;">
                 <p>Brian Dailey is a software engineer who, against his most valiant efforts, keeps getting sucked back into the healthcare field. He built it as a hobby project. It is available on <a href="https://github.com/briandailey/haslinger">GitHub as an open source project</a>.</p>
             </div>
         </div>
-
-        <p><a href="/" class="btn"><i class="icon-arrow-left"></i> Back</a></p>
+        <div class="row">
+            <p><a href="/" class="btn"><i class="glyphicon glyphicon-arrow-left"></i> Back</a></p>
+        </div>
     </div>
 </div>
 {% endblock %}

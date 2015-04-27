@@ -1,85 +1,95 @@
 {% extends "layout.html" %}
 {% block body %}
+    <div class="container" style="">
+    </div>
     <div class="container">
-        <header id="overview" class="jumbotron subhead">
-            <h1>ICD-9 / ICD-10 Helper</h1>
-            <p class="lead">
-            A quick, convenient way to look up mapping
-            across ICD-9 and ICD-10 codes. <a href="/about">More info here.</a>
-            </p>
+        <br/>
+        <header id="overview" class="subhead transparent-well">
+            <br/>
+            <div class="text-center">
+                <h2>ICD-9 / ICD-10 Helper</h2>
+                <p>
+                A quick, convenient way to crosswalk
+                ICD-9 and ICD-10 codes. <a href="/about">More info here.</a>
+                </p>
+            </div>
+            <br/>
         </header>
-        <div class="search">
+        <br/>
+        <div class="search transparent-well col-md-8 col-md-offset-2">
             <form class="form-search" action="/gem">
-                <table class="table table-bordered table-striped">
-                    <thead>
-                        <tr>
-                            <th>Direction</th>
-                            <th>Code Type</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>
-                                <input type="radio" name="forward" value="1" checked="checked"/>
-                                ICD-9 &rarr; ICD-10
-                            </td>
-                            <td>
-                                <input type="radio" name="diagnosis" value="1" checked="checked" />
-                                Diagnosis
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <input type="radio" name="forward" value="0" />
-                                ICD-9 &larr; ICD-10
-                            </td>
-                            <td>
-                                <input type="radio" name="diagnosis" value="0" />
-                                Procedure
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-                <div class="input-append">
-                    <input placeholder="Start typing a code or description here." type="text" name="q" id="autocomplete" class="span4 search-query" />
-                    <button class="btn btn-primary" type="submit">Go</button>
+                <div class="row">
+                    <div class="col-md-1"></div>
+                    <div class="col-md-4 text-center">
+                        Crosswalk Direction
+                        <br/>
+                        <input type="radio" name="forward" value="1" checked="checked"/>
+                        ICD-9 &rarr; ICD-10
+                        <br/>
+                        <input type="radio" name="forward" value="0" />
+                        ICD-10 &rarr; ICD-9
+                        <br/>
+                    </div>
+                    <div class="col-md-1"></div>
+                    <div class="col-md-4 text-center">
+                        Code Type
+                        <br/>
+                        <input type="radio" name="diagnosis" value="1" checked="checked" />
+                        Diagnosis
+                        <br/>
+                        <input type="radio" name="diagnosis" value="0" />
+                        Procedure
+                    </div>
+                </div>
+                <br/>
+                <div class="input-group">
+                    <input placeholder="Start typing a code or description here." type="text" name="q" id="autocomplete" class="form-control" />
+                    <span class="input-group-btn">
+                        <button class="btn btn-primary" type="submit">Crosswalk Code</button>
+                    </span>
                 </div>
             </form>
-        </div>
-        <div id="matches"></div>
-        <center><a href="/about#how">How do I use this?</a></center>
-        <div id="glossary">
-            <div class="page-header">
-                <h2>Glossary</h2>
-            </div>
             <div class="row">
-                <p>All glossary explanations are taken from the <em><a href="https://www.cms.gov/Medicare/Coding/ICD10/downloads/GemsTechDoc.pdf">General Equivalence Mappings, Documentation for Technical Users</a></em>.</p>
-                <div class="span6">
-                    <p>
-                        <span class="label label-important">Approximate Match</span>
+                <div id="matches"></div>
+            </div>
+            <br/>
+            <center><a href="/about#how">How do I use this?</a></center>
+        </div>
+    </div>
+    <br/>
+    <div class="container">
+        <div class="well transparent-well">
+            <div id="glossary">
+                <h2>Glossary</h2>
+                <div class="row">
+                    <p class="lead text-center">All glossary explanations are taken from the <em><a href="https://www.cms.gov/Medicare/Coding/ICD10/downloads/GemsTechDoc.pdf">General Equivalence Mappings, Documentation for Technical Users</a></em>.</p>
+                    <div class="col-md-6">
+                        <p>
+                            <span class="label label-danger">Approximate Match</span>
+                            <br/>
+                            Indicates complete meaning of the source and the target are not considered equivalent.
+                        </p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><span class="label label-success">Exact Match</span>
+                            <br/>
+                            Indicates the complete meaning of the source and the target are considered equivalent and the source and target translate only to each other in both GEMs files.
+                        </p>
+                    </div>
+                    <div class="col-md-6">
+                        <p>
+                        <span class="label label-warning">Combination</span>
                         <br/>
-                        Indicates complete meaning of the source and the target are not considered equivalent.
-                    </p>
-                </div>
-                <div class="span6">
-                    <p><span class="label label-success">Exact Match</span>
+                        Indicates that a cluster of target system codes—consisting of two, three, four, or more codes— taken together provide an adequate translation of the source system code.
+                        </p>
+                    </div>
+                    <div class="col-md-6">
+                        <p>
+                        <span class="label label-info">Choice 1</span>
                         <br/>
-                        Indicates the complete meaning of the source and the target are considered equivalent and the source and target translate only to each other in both GEMs files.
-                    </p>
-                </div>
-                <div class="span6">
-                    <p>
-                    <span class="label label-warning">Combination</span>
-                    <br/>
-                    Indicates that a cluster of target system codes—consisting of two, three, four, or more codes— taken together provide an adequate translation of the source system code.
-                    </p>
-                </div>
-                <div class="span6">
-                    <p>
-                    <span class="label label-info">Choice 1</span>
-                    <br/>
-                    Indicates that there is a pick-list of choices that work together. Each instance of a complete translation is referred to as a "cluster."
-                    </p>
+                        Indicates that there is a pick-list of choices that work together. Each instance of a complete translation is referred to as a "cluster."
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
