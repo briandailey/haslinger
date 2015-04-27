@@ -19,7 +19,7 @@ def build_archive(tag):
 
 def deploy_code(tag="HEAD"):
     local('tar czf deploy.tgz *.py requirements.txt templates')
-    with cd('/home/bdailey/webapps/icd10helper/lib/python2.7'):
+    with cd('/home/bdailey/webapps/icd10helper_py3/lib/python3.4'):
         put('deploy.tgz', 'deploy.tgz')
         run('tar zxf deploy.tgz && rm deploy.tgz')
         # clean up all compiled code.
